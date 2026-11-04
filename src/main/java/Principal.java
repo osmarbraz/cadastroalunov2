@@ -9,7 +9,7 @@ public class Principal {
     static int idades[] = new int[100];
     static int N = 0;
 
-    public static void menu() {
+    public static int menu() {
         System.out.println(">>>>>>>>>>>>>Cadastro de aluno<<<<<<<<<<<");
         System.out.println("1 - Cadastrar aluno");
         System.out.println("2 - Listar alunos");
@@ -18,6 +18,8 @@ public class Principal {
         System.out.println("5 - Alterar alunos");
         System.out.println("9 - Sair");
         System.out.println("Digite um opcao:");
+        int opcao = Integer.parseInt(leitor.nextLine());
+        return opcao;
     }
 
     public static void cadastrar() {
@@ -47,14 +49,12 @@ public class Principal {
         System.out.println("Consultar por nome");
         System.out.println("Digite o nome do aluno a ser pesquisado:");
         String nomePesquisa = leitor.nextLine();
-        boolean flag = false;
-        for (int i = 0; i < N; i++) {
-            if ((nomes[i].equalsIgnoreCase(nomePesquisa)) == true) {
-                System.out.println("Achei o aluno com o nome:" + nomes[i] + " e idade " + idades[i]);
-                flag = true;
-            }
-        }
-        if (flag == false) {
+        int posicaoConsulta = procurarPosicaoNomeAluno(nomePesquisa);
+        if (posicaoConsulta != -1) {
+            System.out.println("Achei o aluno com o nome:");
+            System.out.println("Nome:" + nomes[posicaoConsulta]);
+            System.out.println("Idade:" + idades[posicaoConsulta]);
+        } else {
             System.out.println("Nenhum aluno encontrado com o nome " + nomePesquisa);
         }
     }
@@ -101,17 +101,22 @@ public class Principal {
         } while (opcao2 != 9);
         //Fim do submenu 3
     }
-
-    public static void excluirAlunos() {
-        System.out.println("Excluindo Aluno");
-        System.out.println("Digite o nome do aluno a ser pesquisado para excluir:");
-        String nomePesquisa = leitor.nextLine();
+    
+    public static int procurarPosicaoNomeAluno(String nomePesquisa){
         int posicaoExcluir = -1;
         for (int i = 0; i < N; i++) {
             if ((nomes[i].equalsIgnoreCase(nomePesquisa)) == true) {
                 posicaoExcluir = i;
             }
         }
+        return posicaoExcluir;
+    }
+
+    public static void excluirAlunos() {
+        System.out.println("Excluindo Aluno");
+        System.out.println("Digite o nome do aluno a ser pesquisado para excluir:");
+        String nomePesquisa = leitor.nextLine();
+        int posicaoExcluir = procurarPosicaoNomeAluno(nomePesquisa);
         if (posicaoExcluir != -1) {
             //Preenche a posição a ser excluida com o o próximo do vetor
             for (int i = posicaoExcluir; i < N - 1; i++) {
@@ -130,12 +135,7 @@ public class Principal {
         System.out.println("Alterando aluno");
         System.out.println("Digite o nome do aluno a ser pesquisado para alterar:");
         String nomePesquisa = leitor.nextLine();
-        int posicaoAlterar = -1;
-        for (int i = 0; i < N; i++) {
-            if ((nomes[i].equalsIgnoreCase(nomePesquisa)) == true) {
-                posicaoAlterar = i;
-            }
-        }
+        int posicaoAlterar = procurarPosicaoNomeAluno(nomePesquisa);
         if (posicaoAlterar != -1) {
             System.out.println("Digite o nome do aluno para alterar:");
             String nome = leitor.nextLine();
@@ -152,9 +152,8 @@ public class Principal {
     public static void main(String[] args) {
         //Menu
         int opcao1;
-        do {
-            menu();
-            opcao1 = Integer.parseInt(leitor.nextLine());
+        do {            
+            opcao1 = menu();
             switch (opcao1) {
                 case 1:
                     cadastrar();
